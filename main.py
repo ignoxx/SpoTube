@@ -11,7 +11,7 @@ def index(response):
 
 @app.route('/search/', methods=['POST'])
 def search():
-    respones = _search(request.form["searchText"])
+    response = _search(request.form["searchText"])
 
     html_template ='''
     <tr>
