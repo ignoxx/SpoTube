@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for
-from src.porno_bombe_application_programming_interface_by_viktor_and_ignas_2017_mafaka.py import _search
+from src.spotify_api.py import _search
 
 
 app = Flask(__name__)
