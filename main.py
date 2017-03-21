@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, redirect, url_for
-from src.spotify_api.py import _search
+from src.spotify_api import _search
 
 
 app = Flask(__name__)
