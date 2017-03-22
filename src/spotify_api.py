@@ -9,7 +9,7 @@ def _search(_input):
         _return = {"track": [], "album": [], "playlist": []}
         
         # grab track data
-        track_results = SP.search(q = "track:" + _input, type = "track", limit=10)
+        track_results = SP.search(q = "track:" + _input, type = "track", limit=50)
         for i in range(0, len(track_results['tracks']['items'])):
             _return["track"].append(
                 {
@@ -18,7 +18,8 @@ def _search(_input):
                     "cover_url":    track_results['tracks']['items'][i]['album']['images'][0]['url'],
                     "track_url":    track_results['tracks']['items'][i]['external_urls'],
                     "track_name":   track_results['tracks']['items'][i]['name'],
-                    "artists":      track_results['tracks']['items'][i]['artists'][0]['name']
+                    "artists":      track_results['tracks']['items'][i]['artists'][0]['name'],
+                    "album_name":   track_results['tracks']['items'][i]['album']['name']
                 }
             )
 

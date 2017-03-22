@@ -62,31 +62,22 @@
   font-size: 13px;
 }
 
-/* CARD 
-.demo-card-square.mdl-card {
-  display: flex;
-  width: 327px;
-  height: 320px;
+.mdl-data-table {
+    table-layout:fixed;
+    width:100%;
 }
 
-.demo-card-square > .mdl-card__title {
-  color: #fff;
-  background-color: #84bd00;
+#my-table td, th {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
 }
-*/
 
-.demo-card-image.mdl-card {
-  width: 256px;
-  height: 256px;
-  background: url('../assets/demos/image_card.jpg') center / cover;
+.mdl-data-table td, th{
+  text-align: left !important;
 }
-.demo-card-image > .mdl-card__actions {
-  height: 52px;
-  padding: 16px;
-  background: rgba(0, 0, 0, 0.2);
-}
-.demo-card-image__filename {
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-}
+
+
+
