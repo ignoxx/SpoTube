@@ -1,15 +1,98 @@
 # -*- coding: utf-8 -*-
+#Spotify Import
 import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
 
-SP = spotipy.Spotify()
-SP.trace = False
+import pyperclip    #TO COPY
+
+#YouTube Import
+from apiclient.discovery import build
+from apiclient.errors import HttpError
+from oauth2client.tools import argparser
+import codecs
+import json
+import sys
+
+#There was an encoding error if exist delete '''
+'''
+if sys.stdout.encoding != 'cp850':
+  sys.stdout = codecs.getwriter('cp850')(sys.stdout, 'strict')
+if sys.stderr.encoding != 'cp850':
+  sys.stderr = codecs.getwriter('cp850')(sys.stderr, 'strict')
+'''
+
+#YouTube ID and Secret
+DEVELOPER_KEY = "AIzaSyBmOvFVjmpEnW3jpdPOTZHdUrik62MTt64"
+YOUTUBE_API_SERVICE_NAME = "youtube"
+YOUTUBE_API_VERSION = "v3"
+
+#Spotify ID and Secret
+my_client_id='1516224ff93e4ffaa507140ab351632f'
+my_client_secret='5d4ca6f6a09e41bdaeb38a587193dcf6'
+
+client_credentials_manager = SpotifyClientCredentials(client_id=my_client_id,client_secret=my_client_secret)
+SP = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 def _search(_input):
     if len(_input) > 0:
+
+        def youtube_search(options):
+            youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
+            developerKey=DEVELOPER_KEY)
+
+                # Call the search.list method to retrieve results matching the specified query term.
+            search_response = youtube.search().list(
+            q=options,
+            part="id,snippet",
+            maxResults=1
+            ).execute()
+
+                #filter the video ID's and save them
+            for search_result in search_response.get("items", []):
+                #check search_result or search_response for understanding
+                #print json.dumps(search_result, indent=4)
+                if search_result["id"]["kind"] == "youtube#video":
+                    vid=search_result["id"]["videoId"]
+                    videoIDS.append(vid)
+
         _return = {"track": [], "album": [], "playlist": []}
+
         
+        if "spotify" in _input:
+            if "open.spotify" in _input:
+                #https://open.spotify.com/user/1143242003/playlist/2N8fsNZRuWQOyMurU8myu2
+                username = _input.split('/')[4]
+                playlist_id = _input.split('/')[6]
+
+            else:
+                #spotify:user:1143242003:playlist:1cpIoi6uRhLWbA4tlnxIok
+                username = _input.split(':')[2]
+                playlist_id = _input.split(':')[4]
+
+        elif "youtube" in _input:
+            if "list" in _input:
+                print "test"
+            else:
+                print "test"
+
+
+        # grab playlist data
+        playlist_results = SP.user_playlist(username, playlist_id)
+        for i in range(0, len(playlist_results['tracks']['items'])):
+            _return["playlist"].append(
+                {
+                    "id":           playlist_results['tracks']['items'][i]['track']['id'],
+                    "duration_s":   playlist_results['tracks']['items'][i]['track']['duration_ms']/1000,
+                    "cover_url":    playlist_results['tracks']['items'][i]['track']['album']['images'][0]['url'],
+                    "track_url":    playlist_results['tracks']['items'][i]['track']['external_urls'],
+                    "track_name":   playlist_results['tracks']['items'][i]['track']['name'],
+                    "artists":      playlist_results['tracks']['items'][i]['track']['artists'][0]['name'],
+                    "album_name":   playlist_results['tracks']['items'][i]['track']['album']['name']
+                }
+            )
+          
         # grab track data
-        track_results = SP.search(q = "track:" + _input, type = "track", limit=50)
+        track_results = SP.search(q = "track:" + _input, type = "track", limit=10)
         for i in range(0, len(track_results['tracks']['items'])):
             _return["track"].append(
                 {
@@ -39,7 +122,7 @@ def _search(_input):
                 }
 
                 album_duration += track['duration_ms']/1000
-            
+                
 
             _return["album"].append(
                 {
@@ -50,5 +133,6 @@ def _search(_input):
                     "album_tracks":     tracks
                 }
             )
-        
-        return _return
+                
+            
+    return _return

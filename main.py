@@ -48,6 +48,15 @@ def search():
       <td class="mdl-data-table__cell--non-numeric">%s</td>
     </tr>
     '''
+    for i in range(0, len(response["playlist"])):
+        track_response += track_html_template%(
+            response["playlist"][i]["track_name"],
+            response["playlist"][i]["artists"],
+            response["playlist"][i]["album_name"],
+            divmod(response["playlist"][i]["duration_s"], 60)[0],
+            divmod(response["playlist"][i]["duration_s"], 60)[1],
+            i+1
+        )
 
     for i in range(0, len(response["track"])):
         track_response += track_html_template%(
