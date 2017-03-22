@@ -25,8 +25,10 @@ def index(response):
 @app.route('/search/', methods=['POST'])
 def search():
     response = _search(request.form["searchText"])
+
     track_response = ""
     album_response = ""
+
 
     track_html_template = '''
     <tr>
