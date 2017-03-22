@@ -35,7 +35,15 @@ SP = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 def _search(_input):
     if len(_input) > 0:
+        videoIDS = []
+        videoLink = []
+        isSet = False
+        createLink = 0
 
+        _return = {"track": [], "album": [], "playlist": []}
+        def generateYTLink(ids):
+            for ID in ids:
+                videoLink.append("https://www.youtube.com/watch?v="+ID)
         def youtube_search(options):
             youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
             developerKey=DEVELOPER_KEY)
@@ -55,7 +63,7 @@ def _search(_input):
                     vid=search_result["id"]["videoId"]
                     videoIDS.append(vid)
 
-        _return = {"track": [], "album": [], "playlist": []}
+        
 
         
         if "spotify" in _input:
@@ -63,11 +71,13 @@ def _search(_input):
                 #https://open.spotify.com/user/1143242003/playlist/2N8fsNZRuWQOyMurU8myu2
                 username = _input.split('/')[4]
                 playlist_id = _input.split('/')[6]
+                isSet = True
 
             else:
                 #spotify:user:1143242003:playlist:1cpIoi6uRhLWbA4tlnxIok
                 username = _input.split(':')[2]
                 playlist_id = _input.split(':')[4]
+                isSet = True
 
         elif "youtube" in _input:
             if "list" in _input:
@@ -76,35 +86,36 @@ def _search(_input):
                 print "test"
 
 
-        # grab playlist data
-        playlist_results = SP.user_playlist(username, playlist_id)
-        for i in range(0, len(playlist_results['tracks']['items'])):
-            _return["playlist"].append(
-                {
-                    "id":           playlist_results['tracks']['items'][i]['track']['id'],
-                    "duration_s":   playlist_results['tracks']['items'][i]['track']['duration_ms']/1000,
-                    "cover_url":    playlist_results['tracks']['items'][i]['track']['album']['images'][0]['url'],
-                    "track_url":    playlist_results['tracks']['items'][i]['track']['external_urls'],
-                    "track_name":   playlist_results['tracks']['items'][i]['track']['name'],
-                    "artists":      playlist_results['tracks']['items'][i]['track']['artists'][0]['name'],
-                    "album_name":   playlist_results['tracks']['items'][i]['track']['album']['name']
-                }
-            )
           
-        # grab track data
-        track_results = SP.search(q = "track:" + _input, type = "track", limit=10)
-        for i in range(0, len(track_results['tracks']['items'])):
-            _return["track"].append(
-                {
-                    "id":           track_results['tracks']['items'][i]['id'],
-                    "duration_s":   track_results['tracks']['items'][i]['duration_ms']/1000,
-                    "cover_url":    track_results['tracks']['items'][i]['album']['images'][0]['url'],
-                    "track_url":    track_results['tracks']['items'][i]['external_urls'],
-                    "track_name":   track_results['tracks']['items'][i]['name'],
-                    "artists":      track_results['tracks']['items'][i]['artists'][0]['name'],
-                    "album_name":   track_results['tracks']['items'][i]['album']['name']
-                }
-            )
+        # grab playlist or track data
+        if isSet == True:
+            playlist_results = SP.user_playlist(username, playlist_id)
+            for i in range(0, len(playlist_results['tracks']['items'])):
+                _return["playlist"].append(
+                    {
+                        "id":           playlist_results['tracks']['items'][i]['track']['id'],
+                        "duration_s":   playlist_results['tracks']['items'][i]['track']['duration_ms']/1000,
+                        "cover_url":    playlist_results['tracks']['items'][i]['track']['album']['images'][0]['url'],
+                        "track_url":    playlist_results['tracks']['items'][i]['track']['external_urls'],
+                        "track_name":   playlist_results['tracks']['items'][i]['track']['name'],
+                        "artists":      playlist_results['tracks']['items'][i]['track']['artists'][0]['name'],
+                        "album_name":   playlist_results['tracks']['items'][i]['track']['album']['name']
+                    }
+                )
+        else:
+            track_results = SP.search(q = "track:" + _input, type = "track", limit=10)
+            for i in range(0, len(track_results['tracks']['items'])):
+                _return["track"].append(
+                    {
+                        "id":           track_results['tracks']['items'][i]['id'],
+                        "duration_s":   track_results['tracks']['items'][i]['duration_ms']/1000,
+                        "cover_url":    track_results['tracks']['items'][i]['album']['images'][0]['url'],
+                        "track_url":    track_results['tracks']['items'][i]['external_urls'],
+                        "track_name":   track_results['tracks']['items'][i]['name'],
+                        "artists":      track_results['tracks']['items'][i]['artists'][0]['name'],
+                        "album_name":   track_results['tracks']['items'][i]['album']['name']
+                    }
+                )
 
 
         # grab album data
@@ -133,6 +144,17 @@ def _search(_input):
                     "album_tracks":     tracks
                 }
             )
-                
-            
+       
+        if isSet == True:
+            for i in range(0,len(playlist_results['tracks']['items'])):
+                youtube_search(_return["playlist"][i]['artists'] + " - " + _return["playlist"][i]['track_name'])
+            generateYTLink(videoIDS)
+        else:
+            for i in range(0, len(track_results['tracks']['items'])):
+                youtube_search(_return["track"][i]['artists'] + " - " + _return["track"][i]['track_name'])
+            generateYTLink(videoIDS)
+
+        #print json.dumps(videoLink, indent=4)
+        
+       
     return _return
