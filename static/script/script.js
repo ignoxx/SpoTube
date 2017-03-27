@@ -3,9 +3,12 @@ $(function(){
     var mainWidth = $('.demo-content').width();
     $('table').width(mainWidth);
     $('#textField').width(mainWidth);
+    $('#btn_download').css({'min-width': mainWidth});
+
     $('#search').css({'text-align': 'center'});
     $('.mdl-textfield__label').css({'text-align': 'center'});
     $('.mdl-checkbox').width(0);
+    
 
     //register changes on clicks
     $('#checkboxTracks').click(function(){
@@ -30,5 +33,6 @@ $(function(){
     $(window).resize(function(){
         mainWidth = $('.demo-content').width();
         $('table').width(mainWidth);
+        $('#btn_download').css({'min-width': mainWidth});
     });
 });

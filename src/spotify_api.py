@@ -44,17 +44,16 @@ def _search(_input):
             for ID in ids:
                 videoLink.append("https://www.youtube.com/watch?v="+ID)
         def youtube_search(options):
-            youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
-            developerKey=DEVELOPER_KEY)
+            youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
 
-                # Call the search.list method to retrieve results matching the specified query term.
+            # Call the search.list method to retrieve results matching the specified query term.
             search_response = youtube.search().list(
-            q=options,
-            part="id,snippet",
-            maxResults=1
+                q = options,
+                part = "id,snippet",
+                maxResults = 1
             ).execute()
 
-                #filter the video ID's and save them
+            #filter the video ID's and save them
             for search_result in search_response.get("items", []):
                 #check search_result or search_response for understanding
                 #print json.dumps(search_result, indent=4)

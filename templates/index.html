@@ -39,4 +39,13 @@
             </table>
         </section>
     {% endif %}
+
+    {% if album_response != "" or track_response != "" %}
+        <hr> </hr>
+        
+        <!-- Accent-colored raised button with ripple -->
+        <button id="btn_download" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+            Download selected tracks
+        </button>
+    {% endif %}
 {% endblock %}
