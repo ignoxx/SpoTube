@@ -34,12 +34,11 @@ client_credentials_manager = SpotifyClientCredentials(client_id=my_client_id,cli
 SP = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 def _search(_input):
-    if len(_input) > 0:
+    if len(_input['searchText']) > 0:
         videoIDS = []
         videoLink = []
         isSet = False
         createLink = 0
-
         _return = {"track": [], "album": [], "playlist": []}
         def generateYTLink(ids):
             for ID in ids:
@@ -63,24 +62,21 @@ def _search(_input):
                     vid=search_result["id"]["videoId"]
                     videoIDS.append(vid)
 
-        
-
-        
-        if "spotify" in _input:
-            if "open.spotify" in _input:
+        if "spotify" in _input['searchText']:
+            if "open.spotify" in _input['searchText']:
                 #https://open.spotify.com/user/1143242003/playlist/2N8fsNZRuWQOyMurU8myu2
-                username = _input.split('/')[4]
-                playlist_id = _input.split('/')[6]
+                username = _input['searchText'].split('/')[4]
+                playlist_id = _input['searchText'].split('/')[6]
                 isSet = True
-
             else:
                 #spotify:user:1143242003:playlist:1cpIoi6uRhLWbA4tlnxIok
-                username = _input.split(':')[2]
-                playlist_id = _input.split(':')[4]
+                username = _input['searchText'].split(':')[2]
+                playlist_id = _input['searchText'].split(':')[4]
                 isSet = True
+                
 
-        elif "youtube" in _input:
-            if "list" in _input:
+        elif "youtube" in _input['searchText']:
+            if "list" in _input['searchText']:
                 print "test"
             else:
                 print "test"
@@ -103,47 +99,48 @@ def _search(_input):
                     }
                 )
         else:
-            track_results = SP.search(q = "track:" + _input, type = "track", limit=10)
-            for i in range(0, len(track_results['tracks']['items'])):
-                _return["track"].append(
-                    {
-                        "id":           track_results['tracks']['items'][i]['id'],
-                        "duration_s":   track_results['tracks']['items'][i]['duration_ms']/1000,
-                        "cover_url":    track_results['tracks']['items'][i]['album']['images'][0]['url'],
-                        "track_url":    track_results['tracks']['items'][i]['external_urls'],
-                        "track_name":   track_results['tracks']['items'][i]['name'],
-                        "artists":      track_results['tracks']['items'][i]['artists'][0]['name'],
-                        "album_name":   track_results['tracks']['items'][i]['album']['name']
-                    }
-                )
+            if int(_input['sliderTracks']) > 0 and _input['checkboxTracks'] == "true":
+                track_results = SP.search(q = "track:" + _input['searchText'], type = "track", limit=int(_input['sliderTracks']))
+                for i in range(0, len(track_results['tracks']['items'])):
+                    _return["track"].append(
+                        {
+                            "id":           track_results['tracks']['items'][i]['id'],
+                            "duration_s":   track_results['tracks']['items'][i]['duration_ms']/1000,
+                            "cover_url":    track_results['tracks']['items'][i]['album']['images'][0]['url'],
+                            "track_url":    track_results['tracks']['items'][i]['external_urls'],
+                            "track_name":   track_results['tracks']['items'][i]['name'],
+                            "artists":      track_results['tracks']['items'][i]['artists'][0]['name'],
+                            "album_name":   track_results['tracks']['items'][i]['album']['name']
+                        }
+                    )
 
 
         # grab album data
-        album_results = SP.search(q = "album:" + _input, type = "album", limit=10)
+        if int(_input['sliderAlbum']) > 0 and _input['checkboxAlbum'] == "true":
+            album_results = SP.search(q = "album:" + _input['searchText'], type = "album", limit=int(_input['sliderAlbum']))
 
-        for i in range(0, len(album_results['albums']['items'])):
-            # grab all album tracks
-            tracks = dict()
-            album_duration = 0
-            for index, track in enumerate(SP.album_tracks(album_results['albums']['items'][i]['uri'])['items']):
-                tracks[str(index)] = {
-                    'name':         track['name'],
-                    'duration_s':   track['duration_ms']/1000,
-                    'track_number': track['track_number'] 
-                }
+            for i in range(0, len(album_results['albums']['items'])):
+                # grab all album tracks
+                tracks = dict()
+                album_duration = 0
+                for index, track in enumerate(SP.album_tracks(album_results['albums']['items'][i]['uri'])['items']):
+                    tracks[str(index)] = {
+                        'name':         track['name'],
+                        'duration_s':   track['duration_ms']/1000,
+                        'track_number': track['track_number'] 
+                    }
 
-                album_duration += track['duration_ms']/1000
+                    album_duration += track['duration_ms']/1000
                 
 
-            _return["album"].append(
-                {
-                    "album_name":       album_results['albums']['items'][i]['name'],
-                    "artists":          album_results['albums']['items'][i]['artists'][0]['name'],
-                    "cover_url":        album_results['albums']['items'][i]['images'][0]['url'],
-                    "duration_s":       album_duration,
-                    "album_tracks":     tracks
-                }
-            )
+                _return["album"].append({
+                        "album_name":       album_results['albums']['items'][i]['name'],
+                        "artists":          album_results['albums']['items'][i]['artists'][0]['name'],
+                        "cover_url":        album_results['albums']['items'][i]['images'][0]['url'],
+                        "duration_s":       album_duration,
+                        "album_tracks":     tracks
+                    }
+                )
        
         if isSet == True:
             for i in range(0,len(playlist_results['tracks']['items'])):

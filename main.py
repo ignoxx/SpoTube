@@ -18,13 +18,14 @@ def add_header(r):
     return r
 
 
-@app.route('/', defaults = {'response':""})
-def index(response):
-    return render_template('index.html', response=response)
+@app.route('/', defaults = {'track_response':"", 'album_response':""})
+def index(track_response, album_response):
+    return render_template('index.html', track_response=track_response, album_response=album_response)
 
 @app.route('/search/', methods=['POST'])
 def search():
-    response = _search(request.form["searchText"])
+
+    response = _search(request.form)
 
     track_response = ""
     album_response = ""

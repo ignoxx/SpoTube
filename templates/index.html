@@ -1,36 +1,42 @@
 {% extends "layout.html" %}
 {% block content %}
-<section id="my-table">
-    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
-        <thead>
-            <tr>
-            <th class="mdl-data-table__cell--non-numeric">Track</th>
-            <th class="mdl-data-table__cell--non-numeric">Artist</th>
-            <th class="mdl-data-table__cell--non-numeric">Album</th>
-            <th class="mdl-data-table__cell--non-numeric">Length</th>
-            <th class="mdl-data-table__cell--non-numeric">Number</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{track_response|safe}}
-        </tbody>
-    </table>
+    {% if track_response != ""%}
+        <hr> </hr> 
 
-    <hr> </hr>
+        <section id="my-table">
+            <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+                <thead>
+                    <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Track</th>
+                    <th class="mdl-data-table__cell--non-numeric">Artist</th>
+                    <th class="mdl-data-table__cell--non-numeric">Album</th>
+                    <th class="mdl-data-table__cell--non-numeric">Length</th>
+                    <th class="mdl-data-table__cell--non-numeric">Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{track_response|safe}}
+                </tbody>
+            </table>
+         </section>
+     {% endif %}
 
-    <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
-        <thead>
-            <tr>
-            <th class="mdl-data-table__cell--non-numeric">Album</th>
-            <th class="mdl-data-table__cell--non-numeric">Artist</th>
-            <th class="mdl-data-table__cell--non-numeric">Length</th>
-            <th class="mdl-data-table__cell--non-numeric">Number</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{album_response|safe}}
-        </tbody>
-    </table>
-</section> 
+     {% if album_response != "" %}
+            <hr> </hr> 
+        <section id="my-table">
+            <table class="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp">
+                <thead>
+                    <tr>
+                        <th class="mdl-data-table__cell--non-numeric">Album</th>
+                        <th class="mdl-data-table__cell--non-numeric">Artist</th>
+                        <th class="mdl-data-table__cell--non-numeric">Length</th>
+                        <th class="mdl-data-table__cell--non-numeric">Number</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{album_response|safe}}
+                </tbody>
+            </table>
+        </section>
+    {% endif %}
 {% endblock %}
-

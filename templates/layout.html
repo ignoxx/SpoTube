@@ -62,12 +62,15 @@
             <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
               <i class="material-icons">search</i>
             </label>
+
             <div class="mdl-textfield__expandable-holder">
-              <form name="searchh" action="{{ url_for('search') }}" method="POST">
-                <input class="mdl-textfield__input" type="text" name="searchText" id="search">
-                <label class="mdl-textfield__label" for="search">Enter your query...</label>
+              <form>
+                <input class="mdl-textfield__input" type="text">
+                <label class="mdl-textfield__label" for="search"></label>
               </form>
+              
             </div>
+
           </div>
         </div>
       </header>
@@ -83,9 +86,51 @@
               <p>
                   <h4> <strong> SpoTube </strong> is a search engine for Spotify songs. Enter a Spotify link or any song/artist name into the search box and it'll search, redirect and download(optional) the desired song! </h4>
               </p>
-              <hr> </hr>
-            {% block content %}
-            {% endblock %}
+
+            <form name="searchh" action="{{ url_for('search') }}" method="POST">
+              <div id="textField" class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="searchText" id="search">
+                <label class="mdl-textfield__label" for="search">Enter a Track name | Album name | Spotify- or YouTube Playlist-URL</label>
+              </div>
+
+              <input type="hidden" name="checkboxTracks" value="true" id="s1"/>
+              <input type="hidden" name="checkboxAlbum"  value="true" id="s2"/>
+              <input type="hidden" name="sliderTracks"   value="50"   id="s3"/>
+              <input type="hidden" name="sliderAlbum"    value="10"   id="s4"/>
+            </form>
+
+            <!-- Settings -->
+            <table>
+              <tr>
+                <td> 
+                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkboxTracks">
+                    <input type="checkbox" id="checkboxTracks" class="mdl-checkbox__input" checked>
+                    <span class="mdl-checkbox__label">Tracks </span>
+                  </label>
+                </td>
+
+                <td> 
+                  <input class="mdl-slider mdl-js-slider" name="sliderTracks" id="sliderTracks" type="range" min="0" max="50" value="10" tabindex="0" step=2>
+                </td>
+              </tr>
+
+              <tr>
+                <td> 
+                  <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkboxAlbum">
+                    <input type="checkbox" id="checkboxAlbum" class="mdl-checkbox__input" checked>
+                    <span class="mdl-checkbox__label">Album</span>
+                  </label>
+                </td>
+
+                <td> 
+                  <input class="mdl-slider mdl-js-slider" name="sliderAlbum" id="sliderAlbum" type="range" min="0" max="50" value="5" tabindex="0" step=2>
+                </td>
+              </tr>
+            </table>
+              
+              {% block content %}
+              {% endblock %}
+
           </div>
         </div>
         <footer class="demo-footer mdl-mini-footer">
