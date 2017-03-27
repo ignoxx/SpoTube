@@ -63,7 +63,8 @@ def _search(_input):
                     videoIDS.append(vid)
 
         if "spotify" in _input['searchText']:
-            if "open.spotify" in _input['searchText']:
+            if "open.spotify" or "play.spotify" in _input['searchText']:
+                #https://play.spotify.com/user/spotify_germany/playlist/7zfy6XVCBYHlBxPRGYSsfI
                 #https://open.spotify.com/user/1143242003/playlist/2N8fsNZRuWQOyMurU8myu2
                 username = _input['searchText'].split('/')[4]
                 playlist_id = _input['searchText'].split('/')[6]
