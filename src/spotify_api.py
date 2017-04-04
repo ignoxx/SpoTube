@@ -142,6 +142,7 @@ def _search(_input):
                     }
                 )
        
+        '''
         if isSet == True:
             for i in range(0,len(playlist_results['tracks']['items'])):
                 youtube_search(_return["playlist"][i]['artists'] + " - " + _return["playlist"][i]['track_name'])
@@ -152,6 +153,6 @@ def _search(_input):
             generateYTLink(videoIDS)
 
         #print json.dumps(videoLink, indent=4)
-        
+        '''
        
     return _return

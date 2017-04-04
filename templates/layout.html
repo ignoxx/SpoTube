@@ -87,17 +87,12 @@
                   <h4> <strong> SpoTube </strong> is a search engine for Spotify songs. Enter a Spotify link or any song/artist name into the search box and it'll search, redirect and download(optional) the desired song! </h4>
               </p>
 
-            <form name="searchh" action="{{ url_for('search') }}" method="POST">
+
               <div id="textField" class="mdl-textfield mdl-js-textfield">
                 <input class="mdl-textfield__input" type="text" name="searchText" id="search">
                 <label class="mdl-textfield__label" for="search">Enter a Track name | Album name | Spotify- or YouTube Playlist-URL</label>
               </div>
 
-              <input type="hidden" name="checkboxTracks" value="true" id="s1"/>
-              <input type="hidden" name="checkboxAlbum"  value="true" id="s2"/>
-              <input type="hidden" name="sliderTracks"   value="50"   id="s3"/>
-              <input type="hidden" name="sliderAlbum"    value="10"   id="s4"/>
-            </form>
 
             <!-- Settings -->
             <table>
@@ -127,10 +122,15 @@
                 </td>
               </tr>
             </table>
+             
+            <!-- responseTable -->
+            
+              <section id="my-table">
+                  <div id="responseTable"></div>
+              </section>
               
-              {% block content %}
-              {% endblock %}
-              
+            
+
           </div>
         </div>
         <footer class="demo-footer mdl-mini-footer">

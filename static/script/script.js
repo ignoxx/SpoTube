@@ -1,38 +1,66 @@
 $(function(){
-    //resize table
-    var mainWidth = $('.demo-content').width();
-    $('table').width(mainWidth);
-    $('#textField').width(mainWidth);
-    $('#btn_download').css({'min-width': mainWidth});
+    /*---------- Resize elements ----------*/
+    var resizeElements = function(){
+        //get the current window width
+        var mainWidth = $('.demo-content').width();
+        $('table').width(mainWidth);
+        $('#textField').width(mainWidth);
+        $('#btn_download').css({'min-width': mainWidth});
+    }
 
+     //resize table if window was resized
+    $(window).resize(resizeElements);
+    resizeElements();
+
+    //Style modifications
     $('#search').css({'text-align': 'center'});
     $('.mdl-textfield__label').css({'text-align': 'center'});
     $('.mdl-checkbox').width(0);
     
-
-    //register changes on clicks
+    /*---------- Click Event(s) ----------*/
+    //Filter-elements
     $('#checkboxTracks').click(function(){
-        $('#s1').val( this.checked );
         $('#sliderTracks').attr({ disabled: !this.checked });
     });
 
     $('#checkboxAlbum').click(function(){
-        $('#s2').val( this.checked );
         $('#sliderAlbum').attr({ disabled: !this.checked });
     });
 
-    $('#sliderTracks').mouseup(function(){
-        $('#s3').val( this.value );
+    //Press enter 
+    $(document).keypress(function(e) {
+        if(e.which == 13) { //<Enter> pressed
+            //Send request
+            $.post("/search/", {
+                checkboxAlbum:  $('#checkboxAlbum').is(":checked"),
+                checkboxTracks: $('#checkboxTracks').is(":checked"),
+                sliderTracks:   $('#sliderTracks').val(),
+                sliderAlbum:    $('#sliderAlbum').val(),
+                searchText:     $('#search').val()
+            })
+
+            //Server response
+            .done(function(data) {
+                $("#responseTable").html(data);
+                resizeElements();
+                console.log(data);
+            });
+        }
     });
 
-    $('#sliderAlbum').mouseup(function(){
-        $('#s4').val( this.value );
+
+    //Download button
+    $('#btn_download').click(function(){
+        $("table").find("tr.is-selected").each(function(){
+            console.log(this);
+        });
+
+        /*
+        $.post("/download", {
+                name: "IGnoXX"
+        });
+        */
     });
 
-    //resize table if window was resized
-    $(window).resize(function(){
-        mainWidth = $('.demo-content').width();
-        $('table').width(mainWidth);
-        $('#btn_download').css({'min-width': mainWidth});
-    });
+   
 });
