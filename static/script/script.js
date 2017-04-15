@@ -51,24 +51,21 @@ $(function(){
                     //upgrade/resize elements
                     componentHandler.upgradeDom();
                     resizeElements();
+
+                    //Download button
+                    $('#btn_download').click(function(){
+                        $("table").find("tr.is-selected").each(function(){
+                            console.log(this);
+                        });
+
+                        /*
+                        $.post("/download/", {
+                                name: "IGnoXX"
+                        });
+                        */
+                    });
                 });
             }
         }
     });
-
-
-    //Download button
-    $('#btn_download').click(function(){
-        $("table").find("tr.is-selected").each(function(){
-            console.log(this);
-        });
-
-        /*
-        $.post("/download/", {
-                name: "IGnoXX"
-        });
-        */
-    });
-
-   
 });
