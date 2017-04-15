@@ -54,15 +54,22 @@ $(function(){
 
                     //Download button
                     $('#btn_download').click(function(){
+
+                        var track_name = [];
+
                         $("table").find("tr.is-selected").each(function(){
-                            console.log(this);
+                            Artist = $(this).find('#artist').text();
+                            Song = $(this).find('#song').text();
+                            track_name.push(Artist +" - "+ Song);                        
                         });
 
-                        /*
-                        $.post("/download/", {
-                                name: "IGnoXX"
-                        });
-                        */
+                        a = track_name.length;
+                        for(i=0;i<a;i++){
+                            $.post("/download/", {
+                                tracknames: track_name[i]
+                            })
+                        }
+                        //console.log(track_name);
                     });
                 });
             }

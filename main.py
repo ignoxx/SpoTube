@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template_string, render_template, request, redirect, url_for
-from src.spotify_api import _search
+from src.spotify_api import _search,_download
 
 
 app = Flask(__name__)
@@ -24,6 +24,7 @@ def index():
 
 @app.route('/download/', methods=['POST'])
 def download():
+    response = _download(request.form)
 
     return "request.form"
 
@@ -76,8 +77,8 @@ def search():
 
     track_html_template = '''
     <tr>
-      <td class="mdl-data-table__cell--non-numeric">%s</td>
-      <td class="mdl-data-table__cell--non-numeric">%s</td>
+      <td class="mdl-data-table__cell--non-numeric" id="song">%s</td>
+      <td class="mdl-data-table__cell--non-numeric" id="artist">%s</td>
       <td class="mdl-data-table__cell--non-numeric">%s</td>
       <td class="mdl-data-table__cell--non-numeric">%s:%s min</td>
       <td class="mdl-data-table__cell--non-numeric">%s</td>

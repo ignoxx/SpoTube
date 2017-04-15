@@ -2,9 +2,15 @@
 #Spotify Import
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-
-import pyperclip    #TO COPY
-
+#finding the download folder
+from _winreg import *
+with OpenKey(HKEY_CURRENT_USER, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders') as key:
+    #the downloadfolder
+    Downloads = QueryValueEx(key, '{374DE290-123F-4565-9164-39C4925E467B}')[0]
+#for downloading the audio
+import pafy
+#String error by polish songs
+import unicodedata
 #YouTube Import
 from apiclient.discovery import build
 from apiclient.errors import HttpError
@@ -33,34 +39,14 @@ my_client_secret='5d4ca6f6a09e41bdaeb38a587193dcf6'
 client_credentials_manager = SpotifyClientCredentials(client_id=my_client_id,client_secret=my_client_secret)
 SP = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
+
+
 def _search(_input):
     if len(_input['searchText']) > 0:
-        videoIDS = []
-        videoLink = []
+        
         isSet = False
         createLink = 0
         _return = {"track": [], "album": [], "playlist": []}
-        def generateYTLink(ids):
-            for ID in ids:
-                videoLink.append("https://www.youtube.com/watch?v="+ID)
-        def youtube_search(options):
-            youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
-
-            # Call the search.list method to retrieve results matching the specified query term.
-            search_response = youtube.search().list(
-                q = options,
-                part = "id,snippet",
-                maxResults = 1
-            ).execute()
-
-            #filter the video ID's and save them
-            for search_result in search_response.get("items", []):
-                #check search_result or search_response for understanding
-                #print json.dumps(search_result, indent=4)
-                if search_result["id"]["kind"] == "youtube#video":
-                    vid=search_result["id"]["videoId"]
-                    videoIDS.append(vid)
-
         if "spotify" in _input['searchText']:
             if "open.spotify" or "play.spotify" in _input['searchText']:
                 #https://play.spotify.com/user/spotify_germany/playlist/7zfy6XVCBYHlBxPRGYSsfI
@@ -91,7 +77,7 @@ def _search(_input):
                     {
                         "id":           playlist_results['tracks']['items'][i]['track']['id'],
                         "duration_s":   playlist_results['tracks']['items'][i]['track']['duration_ms']/1000,
-                        "cover_url":    playlist_results['tracks']['items'][i]['track']['album']['images'][0]['url'],
+                        #"cover_url":    playlist_results['tracks']['items'][i]['track']['album']['images'][0]['url'],
                         "track_url":    playlist_results['tracks']['items'][i]['track']['external_urls'],
                         "track_name":   playlist_results['tracks']['items'][i]['track']['name'],
                         "artists":      playlist_results['tracks']['items'][i]['track']['artists'][0]['name'],
@@ -142,17 +128,33 @@ def _search(_input):
                     }
                 )
        
-        '''
-        if isSet == True:
-            for i in range(0,len(playlist_results['tracks']['items'])):
-                youtube_search(_return["playlist"][i]['artists'] + " - " + _return["playlist"][i]['track_name'])
-            generateYTLink(videoIDS)
-        else:
-            for i in range(0, len(track_results['tracks']['items'])):
-                youtube_search(_return["track"][i]['artists'] + " - " + _return["track"][i]['track_name'])
-            generateYTLink(videoIDS)
-
-        #print json.dumps(videoLink, indent=4)
-        '''
-       
     return _return
+
+def _download(_tracks):
+    tracks = _tracks['tracknames']
+    #normalize text beacuse of öäüćśę ...
+    convert_text = unicodedata.normalize('NFKD', tracks).encode('ascii','ignore')
+
+    
+    def youtube_search(options):
+        youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
+            # Call the search.list method to retrieve results matching the specified query term.
+        search_response = youtube.search().list(
+                q = options,
+                part = "id,snippet",
+                maxResults = 1
+            ).execute()
+            #filter the video ID's and save them
+        for search_result in search_response.get("items", []):
+                #check search_result or search_response for understanding
+                #print json.dumps(search_result, indent=4)
+            if search_result["id"]["kind"] == "youtube#video":
+                vid=search_result["id"]["videoId"]
+                link = "https://www.youtube.com/watch?v="+vid
+                video = pafy.new(link)
+                bestaudio = video.getbestaudio()
+                bestaudio.download(filepath=Downloads, quiet=False, callback=None)
+
+    youtube_search(convert_text)
+    #print json.dumps(convert_text, indent=4)
+    return tracks
