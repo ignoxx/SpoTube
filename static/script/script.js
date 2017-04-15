@@ -46,7 +46,7 @@ $(function(){
                     var response = $.parseHTML(data);
 
                     //output
-                    $("#my-table").html(response);
+                    $("#my-table").hide().html(response).fadeIn(500);
 
                     //upgrade/resize elements
                     componentHandler.upgradeDom();
