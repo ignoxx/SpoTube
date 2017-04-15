@@ -122,7 +122,7 @@ def search():
                 i+1
             )
      
-    return render_template_string(index_html % (track_response, album_response))
+    return render_template_string(index_html%(track_response, album_response))
     
     
 

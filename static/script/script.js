@@ -30,21 +30,29 @@ $(function(){
     //Press enter 
     $(document).keypress(function(e) {
         if(e.which == 13) { //<Enter> pressed
-            //Send request
-            $.post("/search/", {
-                checkboxAlbum:  $('#checkboxAlbum').is(":checked"),
-                checkboxTracks: $('#checkboxTracks').is(":checked"),
-                sliderTracks:   $('#sliderTracks').val(),
-                sliderAlbum:    $('#sliderAlbum').val(),
-                searchText:     $('#search').val()
-            })
+            if( ($('#search').val()).length > 0 ) {
+                //Send request
+                $.post("/search/", {
+                    checkboxAlbum:  $('#checkboxAlbum').is(":checked"),
+                    checkboxTracks: $('#checkboxTracks').is(":checked"),
+                    sliderTracks:   $('#sliderTracks').val(),
+                    sliderAlbum:    $('#sliderAlbum').val(),
+                    searchText:     $('#search').val()
+                })
 
-            //Server response
-            .done(function(data) {
-                $("#responseTable").html(data);
-                resizeElements();
-                console.log(data);
-            });
+                //Server response
+                .done(function(data) {
+                    //Parse html
+                    var response = $.parseHTML(data);
+
+                    //output
+                    $("#my-table").html(response);
+
+                    //upgrade/resize elements
+                    componentHandler.upgradeDom();
+                    resizeElements();
+                });
+            }
         }
     });
 
@@ -56,7 +64,7 @@ $(function(){
         });
 
         /*
-        $.post("/download", {
+        $.post("/download/", {
                 name: "IGnoXX"
         });
         */
