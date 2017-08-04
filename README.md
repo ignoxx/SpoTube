@@ -1,10 +1,13 @@
 # SpoTube
-Spotify downloader
+Spotify over YouTube downloader
 
-by Viktor Grzonkowski & Ignas Kavaliauskas 
+by Viktor Grzonkowski & Ignas Kavaliauskas
 
-# Download Spotify Tracks/Album/Playlists over YouTube
+Everything is working except the download. The aim is to download the file without saving it on the hard drive.
 
-
+# Used libaries
+- Flask
+- spotipy
+- pafy
 
 
