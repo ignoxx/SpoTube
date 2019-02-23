@@ -12,6 +12,7 @@ Download Spotify album/tracks or full playlists over YouTube!
 - Download the file via browser without saving the file on the hard drive(stream the file)
 
 # Used libaries
+- python v2.7
 - Flask
 - spotipy
 - pafy
